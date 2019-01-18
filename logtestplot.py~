@@ -1,0 +1,10 @@
+import matplotlib.pyplot as plt
+import numpy as np
+
+phio=np.logspace(-2, 2., num=20, endpoint=True, base=10.0, dtype=None)
+
+fig = plt.figure(figsize=(8,5))
+y =np.arrange(1,len(phio), 1)
+ax.set_xscale("log")
+plt.plot(phio,y)
+plt.show()

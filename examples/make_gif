@@ -1,3 +1,0 @@
-#!/bin/bash
-
-convert crystal*.png +repage -loop 0 -delay 20 crystal.gif

@@ -136,10 +136,7 @@ class IceClusterBatch():
             for l in range(self.ncrystals[0]):                 
                 data = self.Ss[:,l]  
                 if ch_dist == 'gamma':
-                    self.ch_S[l], self.shape = self.best_fit_distribution(data, ch_dist, xlabel=xlabel, bins=bins, ax=ax)
-                    if self.ch_S[l] <= 0.05:
-                        save=True
-                        print('S catch filename = 'filename)
+                    self.ch_S[l], self.shape = self.best_fit_distribution(data, ch_dist, xlabel=xlabel, bins=bins, ax=ax)                  
                 else:
                     self.ch_S[l] = self.best_fit_distribution(data, ch_dist, xlabel=xlabel, bins=bins, ax=ax)               
             
@@ -347,7 +344,7 @@ class IceClusterBatch():
         #plt.ylabel ("Frequency") 
         plt.xlabel(xlabel)            
         plt.ylim((0,max(n))) 
-        plt.show()
+        #plt.show()
         if ch_dist == 'gamma': 
             
             return (gammach_var, gamma_params[-3])

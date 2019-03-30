@@ -208,7 +208,7 @@ class IceCluster:
         #print('lmax', plates, lmax)
         
         end = time.clock()
-        print("slow time %.2f" % (end-start))
+        #print("slow time %.2f" % (end-start))
         return S, lmax
 
     def place_crystal(self, plates, crystal):

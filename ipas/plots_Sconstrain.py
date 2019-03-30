@@ -406,7 +406,7 @@ class Make_Plots():
             plt.plot(x2, y2, color='darkorange', linewidth=5)  #best fit line
             '''
             
-            xstar = np.arange(0,50)
+            xstar = np.arange(0,2)
             plt.plot(xstar,self.ch_ovrlp[:,0],'*',color='blue',markersize=6, label='characteristic')
             #plt.plot(phiolog,self.ch_ovrlp,color='navy')
            
@@ -505,7 +505,7 @@ class Make_Plots():
         
         if plot_name == 'S':   
         
-            xstar = np.arange(0,50)
+            xstar = np.arange(0,2)
             
             plt.plot(xstar,self.ch_S[:,0],'*',color='blue',markersize=6, label='characteristic')
             #plt.plot(phiolog,self.ch_ovrlp,color='navy')

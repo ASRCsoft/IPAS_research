@@ -360,7 +360,7 @@ def sim_clusters(r, length, width, nclusters, ncrystals, numaspectratios=1, reor
                     #print('in bound', cluster.points)
                     #print('new in bound', new_crystal.points)
                     print('SPEEDY MISS',nmiss, plates)
-                    #cluster.plot_constraints(plates, new_crystal)
+                    #cluster.plot_constraints(plates, new_crystal, k, plot_dots = False)
                     nmiss += 1
                     cluster.recenter()
                     new_crystal.recenter()
@@ -411,7 +411,7 @@ def sim_clusters(r, length, width, nclusters, ncrystals, numaspectratios=1, reor
 
                     #from the seed crystal/agg (determined from S)
                     print('random miss', nmiss)
-                    #cluster.plot_constraints(plates, new_crystal)
+                    #cluster.plot_constraints(plates, new_crystal, k, plot_dots = False)
                     #print(cluster.points)
                     #print('new', new_crystal.points)
 
@@ -457,9 +457,9 @@ def sim_clusters(r, length, width, nclusters, ncrystals, numaspectratios=1, reor
                 #print(cluster.overlap(new_crystal, cluster))
 
                 Ss[n,l], lmax = cluster.calculate_S_ratio(plates, new_crystal)
-                print('S', Ss[n,l])
+                #print('S', Ss[n,l])
 
-                #cluster.plot_constraints(plates, new_crystal, k, plot_dots = False)
+                cluster.plot_constraints(plates, new_crystal, k, plot_dots = False)
 
                 k +=1
                 
@@ -483,7 +483,7 @@ def sim_clusters(r, length, width, nclusters, ncrystals, numaspectratios=1, reor
                     depth[n,l] = cluster.depth/2
                     req[n,l] = np.power((np.power(depth[n,l],2)*major_axis[n,l]),(1./3.))
 
-                print('phi', phi[n,l])
+                #print('phi', phi[n,l])
                 phi_2d[n,l] = cluster.aspect_ratio_2D()
 
 
@@ -501,7 +501,7 @@ def sim_clusters(r, length, width, nclusters, ncrystals, numaspectratios=1, reor
                 d1=d2
 
                 #print('dd, Va, Ve, d2',  dd, Va, Ve, d2)
-                cluster.plot_ellipsoid()
+                #cluster.plot_ellipsoid()
 
                 l+=1  #increment # cluster counter for array indices
 

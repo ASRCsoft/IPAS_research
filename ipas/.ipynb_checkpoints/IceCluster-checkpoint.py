@@ -16,6 +16,7 @@ from ipas import IceCrystal as crys
 from descartes.patch import PolygonPatch
 import descartes
 import mpl_toolkits.mplot3d.art3d as art3d
+import time
 
 
 class IceCluster:
@@ -161,7 +162,8 @@ class IceCluster:
         return shops.cascaded_union(polygons)
 
     def calculate_S_ratio(self, plates, crystal):
-    #Calculate separation of crystals for further collection restriction
+        start = time.clock()
+        #Calculate separation of crystals for further collection restriction
 
         crystals1 = [self, crystal]
         dmaxclus = []
@@ -204,6 +206,9 @@ class IceCluster:
         else:
             lmax = 1.0*(dmaxclus+dmaxnew)/2 #S parameter can't be higher than 0.3 for columns
         #print('lmax', plates, lmax)
+        
+        end = time.clock()
+        print("slow time %.2f" % (end-start))
         return S, lmax
 
     def place_crystal(self, plates, crystal):
@@ -1038,7 +1043,7 @@ class IceCluster:
             ax.plot(newx, newy, 'wo', markersize = 2)
 
 
-            #ax.set_aspect('equal', 'datalim')
+            ax.set_aspect('equal', 'datalim')
 
         return params
     '''
@@ -1166,7 +1171,7 @@ class IceCluster:
         dims = [['x','y']]
         ellipse['z'] = self.fit_ellipse(dims)
 
-        return self.minor_axis['z']/2 / self.major_axis['z']/2
+        return self.minor_axis['z']/ self.major_axis['z']
 
     def overlap(self, new_crystal, seedcrystal):
 

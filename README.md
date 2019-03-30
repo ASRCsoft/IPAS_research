@@ -1,59 +1,82 @@
-# crystal_dda
-A package for generating branched planar crystal polygons and input text files for DDA code
+# The Ice Particle and Aggregate Simulator (IPAS)
+A Python implementation of the [Ice Particle Aggregate Simulator](http://www.carlgschmitt.com/Microphysics.html)
 
-# Installation
-Clone package to local machine. Then cd into directory and install with:
+### Prerequisites
+It is recomended to clone this repository and put into a virtual environment due to the packages that will need to be installed.
 
+### Dependent on:
+*numpy
+*pandas
+*itertools
+*itemgetter
+*shapely
+*descartes
+*scipy
+*random 
+*cloudpickle
+*multiprocessing
+*functools
+*dask
+..and others..
+
+Recommended to run in a python virtual environment
+
+## Crystals (monomers)
+```python
+import numpy as np
+from ipas import IceCrystal as crys
+
+# create a hexagonal crystal centered at (1,0,0)
+crystal = crys.IceCrystal(length=4, width=6, center=[1, 0, 0])
+crystal.points # get a numpy array containing the crystal vertices
+# rotate the crystal 45 degrees around the y-axis and 90 degrees
+# around the z-axis
+crystal.rotate_to([0,np.pi/4,np.pi/2])
+# return a shapely MultiLineString representing the crystal edges,
+# which plots automatically in a jupyter notebook
+crystal.plot()
 ```
-python setup.py install --user
+![crystal](https://user-images.githubusercontent.com/4205859/27136311-01852f9a-50e9-11e7-8f10-db348cdddd3a.png)
+```python
+# project the crystal onto the xy plane, returning a shapely Polygon
+crystal.projectxy()
 ```
+![crystal_projection](https://user-images.githubusercontent.com/4205859/27136458-5f9d07ba-50e9-11e7-8665-f230dc932c6a.png)
 
-Numpy and Matplotlib are required dependencies.
-
-# Usage
-
-The main function to create a branched planar dda file is ```branched_planar_dda``` which we import with:
+## Cluster (aggregate)
 
 ```python
-from crystal_dda.crystal_dda import branched_planar_dda
+from ipas import IceCluster as clus
+# use the crystal to start a cluster
+cluster = clus.IceCluster(crystal)
+# add a new crystal to the cluster
+crystal2 = crys.IceCrystal(length=4, width=6)
+cluster.add_crystal_from_above(crystal2)
+cluster._add_crystal(crystal2)
+cluster.rotate_to([np.pi/30,np.pi/30,0])
+cluster.plot()
 ```
-
-Next, we set the values defining the branched planar crystal shape appropriately. Let's start with the a-axis information. Each crystal has core of area fraction 1 at its center of size ```ac```. We also need a maximum a-axis length ```amax``` to define the shape at full size. And finally, we need an a-axis length ```a``` that subsets the full-size crystal within a hexagon of a-axis length ```a```. So we set the variables: 
-
+![clus](https://github.com/vprzybylo/IPAS_parallel/blob/editing_branch/project.png)
 ```python
-a = 1.8
-amax = 3.
-ac = 0.2
+cluster.plot_ellipse([['x','y']])
 ```
 
-The other variables we need to set are the fractional (and thus all range between 0-1) quantities that further determine the shape. ```fb``` is the area coverage fraction of the sub-branches. ```fg``` is the fractional distance between ```ac``` and ```amax``` that gives the inscribing hexagon of length ```ag```, where ```ag = fg*amax+(1.-fg)*ac```. The region within this inscribing hexagon contains the core at its center and sub-branched beyond ```ac``` so that the area fraction between ```ac``` and ```ag``` is approximately equal to ```fb``` (the main branches and the discrete number of branches cause the true area fraction of the crystal to deviate from the analytical value; see the ```test_afrac_accuracy``` in the examples directory for more information). Finally, we have the linear fraction of the crystal tips at ```amax``` along the edge of the crystal ```ft```. We set these variables below with:
+![fit_ellipse](https://github.com/vprzybylo/IPAS_parallel/blob/editing_branch/fit_ellipse.png)
 
-```python
-fb = 0.6
-ft = 0.4
-fg = 0.5
-```
+## Deployment
 
-We also set the number of sub-branches along one of the 6 main branches of the particle with:
-```python
-nsb = 5
-```
-Note that the width of the sub-branches and main branches are determined from the above constants, with the main-branch width equal to the sub-branch width unless it is greater than ```0.25*ac```; in this case the main branch width is ```0.25*ac```.
+This code can be run on a supercomputer and scaled up by relying on the dask delayed option making use of multiple workers and cores.
 
-The last thing we need as input to the function to create the DDA file are the maximum number of dipoles along the x axis (```numxdip```; i.e.,  the a axis) and the z axis (```numzdip```; i.e., the c axis). These two variables define the aspect ratio of the crystal and the resolution in DDA. We set them, for example, with:
+## Authors
 
-```python
-numxdip = 300
-numzdip = 7
-```
-Finally, we create the DDA input file with:
+* Carl Schmitt, Vanessa Przybylo, William May, Kara Sulia 
 
-```python
-fname, afrac = branched_planar_dda(a, amax, ac, ft, fb, fg, nsb, nxp, nzp)
-```
+## Acknowledgments
+* Based on work by:
+Carl Schmitt: 
+* Schmitt,  C. G. and A. J. Heymsfield,  2010:  The dimensional characteristics of ice crystal aggregates from fractal geometry. J. Atmos. Sci., 1605–1616, doi:10.1175/2009JAS3187.1
+ 
+* Schmitt, C. G. and A. J. Heymsfield, 2014:  Observational quantification of the separation of  simple  and  complex  atmospheric ice  particles.Geophys.  Res.  Lett.,  1301–1307,  doi:80210.1002/2013GL058781
+* Nima Moshtagh for the fit-ellipse function
 
-where ```fname``` is the name of the input file that we just created and ```afrac``` is the analytical area fraction of the crystal. See the examples directory for more information. We can now run the DDA code with this file as an input to calculate the scattering.
-
-![alt text](https://github.com/rskschrom/crystal_dda/blob/master/examples/crystal.gif)
-
-The gif animation below shows DDA files produced with the ```branched_planar_dda()``` function above for ```a``` sizes of a crystal ranging from ```ac``` to ```amax``` for that crystal. The red outline indicates the core hexagon of a-axis length ```ac```, the black outline indicates the inscribing hexagon with a-axis length ```ag```, and the green outline indicates the bounding star shape of the crystal defined by points connecting the center of the main branches to the edge of the crystal tips to the center of each of the edges of the inscribing hexagon.
+* http://www.mathworks.com/matlabcentral/fileexchange/9542
